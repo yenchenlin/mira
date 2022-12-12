@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="shortcut icon" href="">
+  <meta name="description" content="MIRA: Mental Imagery for Robotic Affordances">
+  <meta name="keywords" content="Neural Radiance Fields, Rearrangement, Robotic Manipulation">
+  <title>MIRA</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+  <link rel="stylesheet" href="./assets/font.css">
+  <link rel="stylesheet" href="./assets/main.css">
+
+  <script>
+    function updateSingleVideo() {
+      var agent = document.getElementById("single-menu-agents").value;
+      var demo = document.getElementById("single-menu-demos").value;
+      var task = document.getElementById("single-menu-tasks").value;
+      var inst = document.getElementById("single-menu-instances").value;
+
+      console.log("single", demo, task, inst)
+
+      var video = document.getElementById("single-task-result-video");
+      /* Example: https://mira-corl.github.io/videos/block-insertion-sixdof-ood-form2fit-n_demos%3D100/000000.mp4 */
+      video.src = "https://mira-corl.github.io/videos/" + 
+                  task + 
+                  "-" +
+                  agent +
+                  "-n_demos%3D" + 
+                  demo + 
+                  "/0000" + 
+                  inst + 
+                  ".mp4";
+      video.playbackRate = 1.0;
+      video.play();
+    }
+  </script>
+
+</head>
+<body>
+
+<div class="jumbotron">
+  <div class="container text-center">
+    <h1 style="color:white;margin-bottom:0;">MIRA</h1>
+    <h3 style="color:white;margin-top:0;">Mental Imagery for Robotic Affordances</h3>
+    <br>
+    <p style="color:white"><a href="https://yenchenlin.me/">Yen-Chen Lin</a>, <a href="https://www.peteflorence.com/">Pete Florence</a>, <a href="">Andy Zeng</a>, Jonathan T. Barron, Yilun Du, Wei-Chiu Ma, Anthony Simeonov, Alberto Rodriguez Garcia, Phillip Isola
+    
+    <br>
+  </div>
+</div>
+
+<div class="container bg-3">
+  <div class="row">
+    <h2 class="text-center">Overview Video</h2>
+    <hr>
+    <div class="col-sm-12 text-center" style="margin-top: 1em;">
+      <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/3GH-s9db5e0?rel=0" allowfullscreen></iframe>
+      </div>
+    </div>
+    <br>
+  </div>
+</div>
+
+<div class="container bg-3">
+  <div class="row">
+    <h2 class="text-center"></h2>
+  </div>
+  <p>
+    Humans form mental images of 3D scenes to support counterfactual imagination, 
+    planning, and motor control. Our abilities to predict the appearance and affordance of the scene from previously unobserved 
+    viewpoints aid us in performing manipulation tasks (e.g., 6-DoF kitting) with a level of ease that is currently out of reach 
+    for existing robot learning frameworks. In this work, we aim to build artificial systems that can analogously plan actions on 
+    top of imagined images. To this end, we introduce Mental Imagery for Robotic Affordances (MIRA), an action reasoning framework 
+    that optimizes actions with novel-view synthesis and affordance prediction in the loop. Given a set of 2D RGB images, MIRA builds 
+    a consistent 3D scene representation, through which we synthesize novel orthographic views amenable to pixel-wise affordances 
+    prediction for action optimization. We illustrate how this optimization process enables us to generalize to unseen out-of-plane 
+    rotations for 6-DoF robotic manipulation tasks given a limited number of demonstrations, paving the way toward machines that autonomously 
+    learn to understand the world around them for planning actions.
+  </p>
+</div>
+
+<div class="container bg-3">
+  <div class="row">
+    <h2 class="text-center">Method</h2>
+    <hr />
+    <div class="col-sm-12 text-center">
+      <img src="./assets/method.png" class="img-responsive" style="width:100%" alt="Image">
+    </div>
+  </div>
+  <p>
+    (a) Given a set of multi-view RGB images as input, we optimize a neural radiance
+    field representation of the scene via volume rendering with perspective ray casting. 
+    (b) After the NeRF is optimized,
+    we perform volume rendering with orthographic ray casting to render the scene from V viewpoints. (c) The rendered
+    orthographic images are fed into the policy for predicting pixel-wise action-values that correlate with picking and
+    placing success. (d) The pixel with the highest action-value is selected, and its estimated depth and associated view
+    orientation are used to parameterize the robot’s motion primitive.
+  </p>
+</div><br>
+
+<div class="container bg-3" id="simulation">   
+  <div class="row">
+    <h2 class="text-center">Simulation Results</h2>
+    <hr>
+    <div class="col-sm-6 col-sm-offset-3">
+      <div class="columns">
+        <div class="column has-text-centered">
+
+          <div class="select is-small">
+            <label style="font-weight: normal">Agent:</label>
+            <select id="single-menu-agents" onchange="updateSingleVideo()">
+            <option value="nerfporter_6d">mira</option>
+            <option value="transporter">transporter</option>
+            <option value="form2fit">form2fit</option>
+            </select>
+          </div>
+
+          <div class="select is-small">
+            <label style="font-weight: normal">Task:</label>
+            <select id="single-menu-tasks" onchange="updateSingleVideo()">
+            <option value="place-red-in-green-sixdof-ood">place-red-in-green</option>
+            <option value="block-insertion-sixdof-ood">block-insertion</option>
+            <option value="hanging-disks-ood">hanging-disks-unseen-colors</option>
+            <option value="stacking-kits-ood">stacking-kits-unseen-instances</option>
+            </select>
+          </div>
+
+          <div class="select is-small">
+            <label style="font-weight: normal">Trained with:</label>
+            <select id="single-menu-demos" onchange="updateSingleVideo()">
+            <!-- <option value="1">1</option>
+            <option value="10">10</option> -->
+            <option value="100" selected="selected">100</option>
+            </select>
+            <label style="font-weight: normal">demos.</label>
+          </div>
+          
+          <div class="select is-small">
+            <label style="font-weight: normal">Test instance:</label>
+            <select id="single-menu-instances" onchange="updateSingleVideo()">
+            <option value="01" selected="selected">01</option>
+            <option value="08">02</option>
+            <option value="03">03</option>
+            <option value="04">04</option>
+            <option value="06">05</option>
+            </select>
+          </div>
+          <br/>
+          <br/>
+      
+          <video id="single-task-result-video"
+                controls
+                muted
+                autoplay
+                loop
+                width="100%">
+            <source src="https://mira-corl.github.io/videos/place-red-in-green-sixdof-ood-nerfporter_6d-n_demos%3D100/000001.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>
