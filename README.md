@@ -71,6 +71,17 @@ Evaluate a NeRF-Porter using the model trained for 5000 iterations. Results are 
 python ravens/test.py --assets_root=./ravens/environments/assets/ --disp=True --task=block-insertion-sixdof --agent=mira --n_demos=10 --n_steps=5000
 ```
 
+## Citation
+
+```
+@inproceedings{yen2022mira,
+  title={{MIRA}: Mental Imagery for Robotic Affordances},
+  author={Lin Yen-Chen, Pete Florence, Andy Zeng, Jonathan T. Barron, Yilun Du, Wei-Chiu Ma, Anthony Simeonov, Alberto Rodriguez Garcia, Phillip Isola},
+  booktitle={Conference on Robot Learning ({CoRL})},
+  year={2022}
+}
+```
+
 ## Acknowledgement
 
 This codebase is highly based on the following publication:
